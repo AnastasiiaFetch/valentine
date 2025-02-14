@@ -1,35 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { motion } from "framer-motion";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const HeartPattern = () => {
+  const generateHeart = (name: string) => {
+    let output = [];
+
+    for (let y = 10; y > -10; y--) {
+      let line = "";
+      for (let x = -20; x < 20; x++) {
+        let equation = Math.pow(x * 0.08, 2) + Math.pow(y * 0.15, 2) - 1;
+        let condition =
+          Math.pow(equation, 3) -
+            Math.pow(x * 0.08, 2) * Math.pow(y * 0.15, 3) <=
+          0;
+
+        line += condition ? name[Math.abs((x - y) % name.length)] : " ";
+      }
+      output.push(line);
+    }
+    return output;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div
+      style={{
+        fontFamily: "monospace",
+        whiteSpace: "pre-wrap",
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      {generateHeart("KoxaYou").map((line, index) => (
+        <motion.div
+          key={index}
+          initial={{ x: index % 2 === 0 ? -100 : 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: index * 0.05 }}
+        >
+          {line}
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
-export default App
+export default function App() {
+  return (
+    <div className="flex flex-col items-center h-screen justify-center bg-black text-red-500 font-mono">
+      <HeartPattern />
+    </div>
+  );
+}
